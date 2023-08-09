@@ -1,15 +1,17 @@
 from flask import Blueprint
-from app.auth.models import User
+from app.auth.schemas import user_schema
+
+# from app.auth.models import User
 
 bp = Blueprint("auth", __name__)
 
 response = [
-    {"email": "user@email.com", "password": "1234"},
-    {"email": "user@email.com", "password": "1234"},
+    {"email": "user@email.com", "token": "1234"},
+    {"email": "user@email.com", "token": "1234"},
 ]
 
 
-@bp.route("/auth/")
+@bp.route("/", methods=["POST"])
 def auth():
-    users = User.query.all()
-    return users
+    user = response[0]
+    return user_schema.dump(user)

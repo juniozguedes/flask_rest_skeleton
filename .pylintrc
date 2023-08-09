@@ -6,7 +6,8 @@ disable =   C0115,
             R0903,
             E0401,
             W0718,
-            R0801 #similar lines in 2 files
+            R0801, #similar lines in 2 files
+            R0401  #Cyclic import
 
 
 # Analyse import fallback blocks. This can be used to support both Python 2 and
