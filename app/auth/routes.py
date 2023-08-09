@@ -1,4 +1,3 @@
-from flask import render_template
 from flask import Blueprint
 from app.auth.models import User
 
@@ -13,4 +12,4 @@ response = [
 @bp.route("/auth/")
 def auth():
     users = User.query.all()
-    return render_template("posts/categories.html")
+    return users
