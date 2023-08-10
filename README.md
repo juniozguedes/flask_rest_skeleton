@@ -19,7 +19,7 @@ pre-commit install
 # Run the project
 
 ```
-flask run
+waitress-serve --call 'app:create_app'
 ```
 
 # Pytest

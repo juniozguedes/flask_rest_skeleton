@@ -20,6 +20,7 @@ lazy-object-proxy==1.9.0
 Mako==1.2.4
 MarkupSafe==2.1.1
 marshmallow==3.20.1
+marshmallow-sqlalchemy==0.29.0
 mccabe==0.7.0
 mypy-extensions==1.0.0
 nodeenv==1.8.0
@@ -29,10 +30,13 @@ platformdirs==3.10.0
 pre-commit==3.3.3
 pylint==2.17.5
 python-dotenv==0.21.0
+pytz==2023.3
 PyYAML==6.0.1
+six==1.16.0
 SQLAlchemy==1.4.44
 tomlkit==0.12.1
 typing_extensions==4.7.1
 virtualenv==20.24.2
+waitress==2.1.2
 Werkzeug==2.2.2
 wrapt==1.15.0
