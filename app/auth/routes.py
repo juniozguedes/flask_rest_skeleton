@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
+from marshmallow import ValidationError
 from passlib.context import CryptContext
-from flask import Blueprint
+from flask import Blueprint, jsonify, request
 from jose import jwt
-from app.auth.schemas import user_schema
+from app.auth.models import User, db
+from app.auth.schemas import user_response, user_request
 from app import config_class
 
 
@@ -24,21 +26,23 @@ def create_access_token(data: dict, expires_delta: timedelta):
 
 @bp.route("/register", methods=["POST"])
 def register_user():
+    try:
+        data = user_request.load(request.json)
+    except ValidationError as err:
+        return jsonify({"error": err.messages}), 400
+
     # user = user_db[0]
     # if user:
     #    return user
-
     hashed_password = pwd_context.hash("1234")
-    user = {
-        "email": "iamnew@gmail.com",
-        "password": hashed_password,
-    }
-    user_db.append(user)
+    user = User(email=data["email"], password=hashed_password)
+    db.session.add(user)
+    db.session.commit()
 
     expires = timedelta(minutes=config_class.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token({"sub": user["email"]}, expires)
-    response = {"email": "iamnew@gmail.com", "token": access_token}
-    return user_schema.dump(response)
+    access_token = create_access_token({"sub": data["email"]}, expires)
+    response = {"email": user.email, "token": access_token}
+    return user_response.dump(response)
 
 
 @bp.route("/login", methods=["POST"])
@@ -53,4 +57,4 @@ def login():
     access_token = create_access_token({"sub": request_email}, expires)
 
     response = {"email": request_email, "token": access_token}
-    return user_schema.dump(response)
+    return user_response.dump(response)

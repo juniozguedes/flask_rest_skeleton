@@ -6,5 +6,10 @@ class UserResponse(ma.Schema):
         fields = ("email", "token")
 
 
-user_schema = UserResponse()
-# users_schema = UserSchema(many=True)
+class UserRequest(ma.Schema):
+    class Meta:
+        fields = ("email", "password")
+
+
+user_response = UserResponse()
+user_request = UserRequest()
