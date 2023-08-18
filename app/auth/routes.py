@@ -3,9 +3,9 @@ from marshmallow import ValidationError
 from passlib.context import CryptContext
 from flask import Blueprint, jsonify, request
 from jose import jwt
-from app.auth.models import User, db
-from app.auth.schemas import user_response, user_request
+from app.auth.schemas import user_response_schema, user_request_schema
 from app import config_class
+from app.auth.services import create_user, get_user_by_email
 
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -27,34 +27,37 @@ def create_access_token(data: dict, expires_delta: timedelta):
 @bp.route("/register", methods=["POST"])
 def register_user():
     try:
-        data = user_request.load(request.json)
+        # Validate user_request
+        user_data = user_request_schema.load(request.json)
     except ValidationError as err:
         return jsonify({"error": err.messages}), 400
 
-    # user = user_db[0]
-    # if user:
-    #    return user
-    hashed_password = pwd_context.hash("1234")
-    user = User(email=data["email"], password=hashed_password)
-    db.session.add(user)
-    db.session.commit()
+    if get_user_by_email(user_data["email"]):
+        return {"User already exists"}
+
+    user_data["hashed_password"] = pwd_context.hash("1234")
+    db_user = create_user(user_data)
 
     expires = timedelta(minutes=config_class.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token({"sub": data["email"]}, expires)
-    response = {"email": user.email, "token": access_token}
-    return user_response.dump(response)
+    access_token = create_access_token({"sub": db_user.email}, expires)
+    user_response = {"email": db_user.email, "token": access_token}
+    return user_response_schema.dump(user_response)
 
 
 @bp.route("/login", methods=["POST"])
 def login():
-    request_password = "1234"
-    request_email = "iamnew@gmail.com"
+    try:
+        user_data = user_request_schema.load(request.json)
+    except ValidationError as err:
+        return jsonify({"error": err.messages}), 400
 
-    user = user_db[0]
-    if not pwd_context.verify(request_password, user["password"]):
+    user = get_user_by_email(user_data["email"])
+    if not user:
+        return "User does not exist"
+    if not pwd_context.verify(user_data["password"], user.password):
         return "Wrong password"
     expires = timedelta(minutes=config_class.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token({"sub": request_email}, expires)
+    access_token = create_access_token({"sub": user.email}, expires)
 
-    response = {"email": request_email, "token": access_token}
-    return user_response.dump(response)
+    response = {"email": user.email, "token": access_token}
+    return user_response_schema.dump(response)

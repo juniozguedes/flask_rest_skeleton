@@ -11,5 +11,5 @@ class UserRequest(ma.Schema):
         fields = ("email", "password")
 
 
-user_response = UserResponse()
-user_request = UserRequest()
+user_response_schema = UserResponse()
+user_request_schema = UserRequest()
