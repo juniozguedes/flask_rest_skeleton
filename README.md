@@ -25,8 +25,8 @@ gunicorn -w 4 -b 0.0.0.0:8000 app:app
 # Run the project with Docker
 
 ```
-docker build -t flask-app .
-docker run -p 8000:8000 flask-app
+docker build --force-rm -t flask-app .
+docker run --rm -p 8000:8000 flask-app
 ```
 
 # Pytest

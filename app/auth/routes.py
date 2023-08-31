@@ -8,7 +8,7 @@ from app.auth.exceptions import (
     UserNotFoundException,
     WrongPasswordException,
 )
-from app.auth.schemas import UserRequest, UserResponse
+from app.auth.schemas import UserRequest, user_response_schema
 from app import config_class
 from app.auth.services import create_user, get_user_by_email
 
@@ -40,8 +40,8 @@ def register_user(body: UserRequest):
 
     expires = timedelta(minutes=config_class.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token({"sub": db_user.email}, expires)
-    user_response = UserResponse(email=db_user.email, token=access_token)
-    return user_response
+    user_response = {"email": db_user.email, "token": access_token}
+    return user_response_schema.dump(user_response)
 
 
 @bp.route("/login", methods=["POST"])
@@ -55,8 +55,8 @@ def login(body: UserRequest):
     expires = timedelta(minutes=config_class.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token({"sub": db_user.email}, expires)
 
-    user_response = UserResponse(email=db_user.email, token=access_token)
-    return user_response
+    user_response = {"email": db_user.email, "token": access_token}
+    return user_response_schema.dump(user_response)
 
 
 @bp.route("/", methods=["GET"])

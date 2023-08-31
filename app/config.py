@@ -1,6 +1,6 @@
 """Flask configuration variables."""
 import os
-from os import environ, path
+from os import path
 from dotenv import load_dotenv
 
 basedir = path.abspath(path.dirname(__file__))
@@ -11,14 +11,13 @@ class Config:
     """Set Flask configuration from .env file."""
 
     # General Config
-    SECRET_KEY = environ.get("SECRET_KEY")
-    FLASK_ENV = environ.get("FLASK_ENV")
+    FLASK_ENV = os.environ.get("FLASK_ENV")
 
     # Database
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URI"
-    ) or "sqlite:///" + os.path.join(basedir, "app.db")
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_DATABASE_URI = (
+        os.environ.get("DATABASE_URI")
+        or "postgresql://postgres:1234@localhost:5432/postgres"
+    )
 
     # Auth
     SECRET_KEY = os.environ.get("SECRET_KEY") or "mysecret"

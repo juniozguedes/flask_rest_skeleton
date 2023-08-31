@@ -1,5 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
+from app import ma
 
 
 class UserRequest(BaseModel):
@@ -8,6 +9,9 @@ class UserRequest(BaseModel):
     hashed_password: Optional[str] = None
 
 
-class UserResponse(BaseModel):
-    email: str
-    token: str
+class UserResponse(ma.Schema):
+    class Meta:
+        fields = ("email", "token")
+
+
+user_response_schema = UserResponse()
