@@ -16,8 +16,10 @@ class Subscription(db.Model):
         db.TIMESTAMP, server_default=db.func.current_timestamp(), nullable=False
     )
 
-    # Relationship to access the associated product
-    product = db.relationship("Product", backref="subscriptions", lazy=True)
+    # user cannot have multiple subscriptions to the same product
+    db.UniqueConstraint(
+        "user_id", "product_id", name="unique_user_product_subscription"
+    )
 
     def __repr__(self):
         return f"<Subscription {self.id}>"

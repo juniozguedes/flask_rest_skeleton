@@ -1,4 +1,6 @@
+# pylint: disable=W0611
 from app.extensions import db
+from app.subscriptions.models import Subscription
 
 
 class User(db.Model):

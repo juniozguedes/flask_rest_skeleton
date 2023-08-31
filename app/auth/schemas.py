@@ -1,15 +1,13 @@
-from app import ma
+from typing import Optional
+from pydantic import BaseModel
 
 
-class UserResponse(ma.Schema):
-    class Meta:
-        fields = ("email", "token")
+class UserRequest(BaseModel):
+    email: str
+    password: str
+    hashed_password: Optional[str] = None
 
 
-class UserRequest(ma.Schema):
-    class Meta:
-        fields = ("email", "password")
-
-
-user_response_schema = UserResponse()
-user_request_schema = UserRequest()
+class UserResponse(BaseModel):
+    email: str
+    token: str

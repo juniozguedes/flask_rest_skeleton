@@ -19,7 +19,14 @@ pre-commit install
 # Run the project
 
 ```
-waitress-serve --call 'app:create_app'
+gunicorn -w 4 -b 0.0.0.0:8000 app:app
+```
+
+# Run the project with Docker
+
+```
+docker build -t flask-app .
+docker run -p 8000:8000 flask-app
 ```
 
 # Pytest
