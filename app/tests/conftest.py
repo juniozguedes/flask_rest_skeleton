@@ -1,10 +1,10 @@
-# pylint: disable=E1101
-
-import os
-import tempfile
+# pylint: disable=E1101,W0621
+from faker import Faker
 import pytest
 from app import app
 from app.config import Config
+
+fake = Faker()
 
 
 class TestSettings(Config):
@@ -13,13 +13,10 @@ class TestSettings(Config):
 
 @pytest.fixture
 def client():
-    db_fd, app.config["DATABASE"] = tempfile.mkstemp()
-    app.config["TESTING"] = True
+    app.config.update({"TESTING": True})
 
-    with app.test_client() as test_client:
-        with app.app_context():
-            app.init_db()
-        yield test_client
+    with app.test_client() as client:
+        yield client
 
-    os.close(db_fd)
-    os.unlink(app.app.config["DATABASE"])
+
+RANDOM_STR = fake.email()

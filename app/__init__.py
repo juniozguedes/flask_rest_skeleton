@@ -21,6 +21,5 @@ app.register_blueprint(auth_bp)
 ma.init_app(app)
 db.init_app(app)
 
-
 # To create all tables on startup
 initial_tables.create(app, db)

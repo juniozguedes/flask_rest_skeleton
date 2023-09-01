@@ -9,7 +9,9 @@ class CustomException(Exception):
 
 
 class ValidationException(CustomException):
-    pass
+    def __init__(self, validation_message):
+        message = f"Validation error: {validation_message}"
+        super().__init__(message, code=400)
 
 
 class AuthenticationException(CustomException):

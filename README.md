@@ -52,3 +52,7 @@ Might change depending on the OS, but the idea is to freeze requirements startin
 ```
  .\venv\Scripts\pip3 freeze > requirements.txt
 ```
+
+# Create a local database with PostgreSQL
+
+docker run -p 5432:5432 -v /tmp/database:/var/lib/postgresql/data -e POSTGRES_PASSWORD=1234 -d postgres
