@@ -1,13 +1,12 @@
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validate
 
 
 class UserRequest(Schema):
-    email: fields.Str(required=True)
-    password: fields.Str(required=True)
+    email = fields.String(required=True, validate=validate.Email(), data_key="email")
+    password: fields.String(required=True)
 
-    # Fields to show when sending data:
     class Meta:
-        fields = ["email", "password"]
+        fields = ("email", "password")
 
 
 class UserResponse(Schema):

@@ -54,3 +54,25 @@ def test_register_user_wrong_params(client):
     assert validation_errors["error"] == ["Unknown field."]
 
     assert "error" in json_data
+
+
+def test_register_user_wrong_values(client):
+    user_request = {"email": "notemail", "password": "password123"}
+    resp = client.post("/auth/register", json=user_request)
+
+    assert resp.status_code == 400
+    assert resp.content_type == "application/json"
+
+    # Parse the JSON response content
+    json_data = json.loads(resp.data)
+    schema = UserResponse()
+    validation_errors = schema.validate(json_data)
+
+    # Check if the validation wasn't successful
+    assert validation_errors["error"] == ["Unknown field."]
+
+    assert "error" in json_data
+    assert (
+        json_data["error"]
+        == "Validation error: {'email': ['Not a valid email address.']}"
+    )
